@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# OpenModelica generated simulation results
+model/build/*.log
+model/build/*_res.mat
+model/build/*_prof.intdata
+model/build/*_prof.realdata
+model/build/*_JacA.bin
+
+# Temporary files
+*.tmp
+*.temp
