@@ -1,40 +1,32 @@
 # OpenModelica Simulation Runner
 
-A PyQt6 desktop application for executing an OpenModelica-generated
-`TwoConnectedTanks` simulation with user-defined start and stop times.
-
-This project was developed as a screening-task submission.
+A PyQt6 desktop application for running a compiled OpenModelica `TwoConnectedTanks` simulation with configurable start and stop times.
 
 ## Features
 
-- PyQt6 desktop GUI
-- Select an OpenModelica executable
-- Enter simulation start time
-- Enter simulation stop time
-- Validates simulation time constraints
-- Executes the OpenModelica executable using command-line arguments
-- Captures simulation output
-- Displays success or failure status to the user
-- Uses an object-oriented Python application structure
-- Includes the OpenModelica executable and Windows runtime dependencies
+- Select an OpenModelica executable from the GUI.
+- Use the bundled executable by default when it is available.
+- Configure integer start and stop times.
+- Validate the executable path and simulation time range before starting.
+- Stream simulation output and errors to the application window.
+- Display clear completion and failure statuses.
+- Run without a separate OpenModelica installation when the bundled runtime is included.
 
-## Technology Stack
+## Requirements
 
-- Python 3.6+
+- Windows 10 or later
+- Python 3.8 or later
 - PyQt6
-- OpenModelica
-- Windows 10/11
-- Git/GitHub
+
+The compiled simulation executable and its Windows runtime files are included in `model/build`.
 
 ## Project Structure
 
 ```text
 TwoConnectedTanksProject/
-│
 ├── app/
 │   ├── main.py
 │   └── requirements.txt
-│
 ├── model/
 │   ├── FlowConnect.mo
 │   ├── package.mo
@@ -42,138 +34,70 @@ TwoConnectedTanksProject/
 │   ├── Tank.mo
 │   ├── Tank2.mo
 │   ├── TwoConnectedTanks.mo
-│   │
 │   └── build/
 │       ├── TwoConnectedTanks.exe
-│       ├── OpenModelica runtime DLLs
-│       └── required runtime files
-│
+│       └── OpenModelica runtime files
 ├── original_model/
-│   ├── FlowConnect.mo
-│   ├── package.mo
-│   ├── package.order
-│   ├── Tank.mo
-│   ├── Tank2.mo
-│   └── TwoConnectedTanks.mo
-│
+│   └── Original Modelica source files
 ├── .gitignore
 └── README.md
+```
 
-The application follows this workflow:
+## Installation
 
-User
-  │
-  ▼
-PyQt6 GUI
-  │
-  ├── Select executable
-  ├── Start time
-  └── Stop time
-  │
-  ▼
-Input validation
-  │
-  ▼
-Python subprocess
-  │
-  ▼
-TwoConnectedTanks.exe
-  │
-  ▼
-OpenModelica simulation
-  │
-  ▼
-Simulation result / status
-  │
-  ▼
-GUI status message
+From the project root, install the application dependency:
 
+```powershell
+python -m pip install -r app/requirements.txt
+```
 
-1. Install Python:
-Python 3.6 or later is required.
+## Run the Application
 
-2. Install Python dependencies
-Open a terminal in the app directory:
-cd app
-python -m pip install -r requirements.txt
-
-Running the Application
-From the project root:
+```powershell
 python app/main.py
+```
 
-Running the Application
-From the project root:
-model/build/TwoConnectedTanks.exe
-Command-Line Execution:
-TwoConnectedTanks.exe -override=startTime=2,stopTime=4
+The application opens with the bundled executable selected automatically when `model/build/TwoConnectedTanks.exe` exists. Otherwise, use **Browse...** to select an `.exe` file.
 
-OpenModelica Model
+The valid simulation time range is:
 
-The application executes the compiled:
+```text
+0 <= start time < stop time < 5
+```
 
-NonInteractingTanks.TwoConnectedTanks
+For example, a start time of `2` and a stop time of `4` is valid.
 
-model.
+## Run the Simulation Directly
 
-The model consists of:
+The compiled executable accepts OpenModelica override arguments:
 
-Tank
-Tank2
-FlowConnect
-TwoConnectedTanks
+```powershell
+model\build\TwoConnectedTanks.exe -override startTime=2,stopTime=4
+```
 
-The model is compiled using OpenModelica and the resulting executable
-is included in the model/build directory together with its required
-Windows runtime libraries.
+The GUI starts the process with the same override values.
 
-Input Validation
+## Model
 
-The application validates:
+The OpenModelica model is composed of:
 
-0 <= start_time < stop_time < 5
+- `Tank`
+- `Tank2`
+- `FlowConnect`
+- `TwoConnectedTanks`
 
-Invalid input is rejected before launching the simulation.
+The Modelica source is stored in `model`. The original supplied source files are preserved in `original_model`.
 
-This prevents invalid simulation requests from being passed to the
-OpenModelica executable.
+## Error Handling
 
-Error Handling
+Before launching a simulation, the application checks for:
 
-The application handles:
+- A selected executable
+- An existing `.exe` file
+- A valid start and stop time range
 
-Missing executable
-Invalid time values
-Invalid time ranges
-Process execution errors
-Non-zero process exit codes
-Simulation failures
+During execution, the GUI reports process-launch errors, simulation output, standard error, and non-zero exit codes.
 
-The user receives an appropriate status message through the GUI.
+## License
 
-Reproducibility
-
-The compiled OpenModelica executable and required runtime dependencies
-are included in the repository so that the application does not require
-OpenModelica to be installed separately for execution on the target
-Windows environment.
-
-Development Notes
-
-The Python application separates GUI responsibilities from simulation
-execution logic using classes and follows standard Python practices.
-
-License
-
-### Important
-
-Don't change `main.py` right now.
-
-Don't change the OpenModelica model.
-
-Just replace the README with the above and save it.
-
-Then tell me:
-
-**README done**
-
-and we'll do the final code-quality check before creating the GitHub repository.
+This project was created for educational and screening-task evaluation purposes.
